@@ -27,9 +27,9 @@ class Player:
     position: int
     money: int = 1_000_000
     hand: List[Card] = field(default_factory=list)
-    ante: int = 1
-    blind: int = 1
-    bet: int = 1
+    ante: int = 0
+    blind: int = 0
+    bet: int = 0
     total_bet: int = 0
     is_active: bool = True
     has_folded: bool = False
@@ -338,10 +338,35 @@ if __name__ == "__main__":
         dealer.receive_card(dealer_card2)
         print(f"Dealer received: {dealer_card1}, {dealer_card2}")
 
+    # Deal flop (3 cards)
+    print("\n=== Dealing Flop ===")
+    flop_cards = deck.deal_cards(3)
+    for card in flop_cards:
+        dealer.add_community_card(card)
+    print(f"Flop: {', '.join(str(card) for card in flop_cards)}")
+
+    # Deal turn (1 card)
+    print("\n=== Dealing Turn ===")
+    turn_card = deck.deal_card()
+    if turn_card:
+        dealer.add_community_card(turn_card)
+        print(f"Turn: {turn_card}")
+
+    # Deal river (1 card)
+    print("\n=== Dealing River ===")
+    river_card = deck.deal_card()
+    if river_card:
+        dealer.add_community_card(river_card)
+        print(f"River: {river_card}")
+
+    print(
+        f"\nAll community cards: {', '.join(str(card) for card in dealer.community_cards)}"
+    )
+
     # Place initial bets
     print("\n=== Placing Bets ===")
-    ante_amount = 100
-    blind_amount = 50
+    ante_amount = 1
+    blind_amount = 1
 
     for player in players:
         if player.place_ante(ante_amount):
@@ -364,7 +389,7 @@ if __name__ == "__main__":
 
     # Simulate different streets
     streets = [Street.PRE_FLOP, Street.FLOP, Street.RIVER]
-    base_bet = 100
+    base_bet = 1
 
     for street in streets:
         print(f"\n--- {street.value.upper()} ---")
@@ -407,9 +432,12 @@ if __name__ == "__main__":
     # Show final states
     print("\n=== Final States ===")
     print(f"Dealer: {dealer}")
+    print(f"Dealer's hole cards: {', '.join(str(card) for card in dealer.hand)}")
+    print(f"Community cards: {', '.join(str(card) for card in dealer.community_cards)}")
     for player in players:
         print(
-            f"{player} - Hand value: {player.get_hand_value()}, "
+            f"{player} - Hand: {', '.join(str(card) for card in player.hand)} "
+            f"(value: {player.get_hand_value()}), "
             f"Total investment: ${player.get_total_investment()}"
         )
 
