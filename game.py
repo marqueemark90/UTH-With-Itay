@@ -484,5 +484,5 @@ class Game:
 # Example usage
 if __name__ == "__main__":
     # Create and start a game
-    game = Game(num_players=3, iterations=2)
+    game = Game(num_players=6, iterations=2)
     game.start_game()
